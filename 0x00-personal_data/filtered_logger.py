@@ -44,8 +44,6 @@ class RedactingFormatter(logging.Formatter):
         Returns:
             str: _description_
         """
-        message = record.msg
-        new_message = filter_datum(self.fields, self.REDACTION,
-                                   message, self.SEPARATOR)
-        record.msg = new_message
-        return super().format(record)
+        new_message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION,
+                                   new_message, self.SEPARATOR)
