@@ -17,11 +17,6 @@ def filter_datum(fields: List[str], redaction: str,
         message (list):  a list string representing the log line
         seperator (str): string character separating all fields
     """
-    for field in fields:
-        a_message = f"{field}={redaction}"
-        pattern = f"{field}=[^{separator}]*"
-        message = re.sub(pattern, a_message, message)
-    return message
-    # return re.sub(
-    #    fr'((?:^|\{separator})({"|".join(fields)})=)[^;]*',
-    #    fr'\1{redaction}', message)
+    return re.sub(
+        fr'((?:^|\{separator})({"|".join(fields)})=)[^;]*',
+        fr'\1{redaction}', message)
