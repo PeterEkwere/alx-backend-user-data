@@ -4,6 +4,9 @@
     Author: Peter Ekwere
 """
 import re
+import os
+import mysql.connector
+from mysql.connector.connection import MySQLConnection
 from typing import List
 import logging
 
@@ -70,3 +73,18 @@ def get_logger() -> logging.Logger:
 
     logger.addHandler(stream_handler)
     return logger
+
+
+def get_db() -> MySQLConnection:
+    """ This function returns a connector to the database
+
+    Returns:
+        MySQLConnection: _description_
+    """
+    conn = mysql.connector.connect(
+        host=os.getenv('PERSONAL_DATA_DB_HOST'),
+        user=os.getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
+        password=os.getenv('PERSONAL_DATA_DB_PASSWORD', ''),
+        database=os.getenv('PERSONAL_DATA_DB_NAME')
+    )
+    return conn
