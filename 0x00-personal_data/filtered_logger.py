@@ -6,7 +6,9 @@
 import re
 from typing import List
 
-def filter_datum(fields: List[str], redaction: str, message: List, separator: str) -> str:
+
+def filter_datum(fields: List[str], redaction: str,
+                 message: List, separator: str) -> str:
     """ This function uses regex to replace occurrences of certain field values
 
     Args:
@@ -15,6 +17,11 @@ def filter_datum(fields: List[str], redaction: str, message: List, separator: st
         message (list):  a list string representing the log line
         seperator (str): string character separating all fields
     """
-    return re.sub(
-        fr'((?:^|\{separator})({"|".join(fields)})=)[^;]*',
-        fr'\1{redaction}', message)
+    for field in fields:
+        a_message = f"{field}={redaction}"
+        pattern = f"{field}=[^{separator}]*"
+        message = re.sub(pattern, a_message, message)
+    return message
+    # return re.sub(
+    #    fr'((?:^|\{separator})({"|".join(fields)})=)[^;]*',
+    #    fr'\1{redaction}', message)
