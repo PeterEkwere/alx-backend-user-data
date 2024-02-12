@@ -18,9 +18,13 @@ def filter_datum(fields: List[str], redaction: str,
         message (list):  a list string representing the log line
         seperator (str): string character separating all fields
     """
-    return re.sub(
-        fr'((?:^|\{separator})({"|".join(fields)})=)[^;]*',
-        fr'\1{redaction}', message)
+    for field in fields:
+        regex = f"{field}=[^{separator}]*"
+        message = re.sub(regex, f"{field}={redaction}", message)
+    return message
+    # return re.sub(
+        # fr'((?:^|\{separator})({"|".join(fields)})=)[^;]*',
+        # fr'\1{redaction}', message)
 
 
 class RedactingFormatter(logging.Formatter):
@@ -32,8 +36,8 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields):
-        self.fields = fields
         super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
         """ This method filters values in incoming log records
