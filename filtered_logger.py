@@ -6,7 +6,7 @@
 import re
 from typing import List
 
-def filter_datum(fields: List, redaction: str, message: List, separator: str) -> str:
+def filter_datum(fields: List[str], redaction: str, message: List, separator: str) -> str:
     """ This function uses regex to replace occurrences of certain field values
 
     Args:
