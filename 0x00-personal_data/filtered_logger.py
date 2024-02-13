@@ -100,13 +100,13 @@ def main():
         log = get_logger()
         for row in cursor:
             message = f"name={row[0]}; email={row[1]};" +\
-            f"phone={row[2]};ssn={row[3]};password={row[4]};ip={row[5]};" +\
-            f"last_login={row[6]};user_agent{row[7]}"
+                    f"phone={row[2]};ssn={row[3]};password={row[4]};" +\
+                    f"ip={row[5]};" +\
+                    f"last_login={row[6]};user_agent{row[7]}"
             log.info(message)
         cursor.close()
         db.close()
-    
-    
+
 
 if __name__ == '__main__':
     main()
