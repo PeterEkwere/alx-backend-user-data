@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-"""module for the class SessionAuth"""
-
+"""
+    This module contains the SessionAuth class
+    Author: Peter Ekwere
+"""
 from api.v1.auth.auth import Auth
 import uuid
 
 
 class SessionAuth(Auth):
-    """SessionAuth class for session-based authentication."""
+    """
+    This is the SessionAuth class.
+    """
 
     user_id_by_session_id = {}
 
     def create_session(self, user_id: str = None) -> str:
-        """Create a new session for the given user."""
+        """ This Method creates a new session for a user.
+        """
         if not user_id or type(user_id) != str:
             return None
         session_id = str(uuid.uuid4())
@@ -19,13 +24,15 @@ class SessionAuth(Auth):
         return session_id
 
     def user_id_for_session_id(self, session_id: str = None) -> str:
-        """Retrieves user id from session id"""
+        """ This method retrieves a user id from the session id
+        """
         if not session_id or type(session_id) != str:
             return None
         return self.user_id_by_session_id.get(session_id, None)
 
     def current_user(self, request=None):
-        """Retrieves the User instance based on request cookies"""
+        """ THis method retrieves a User instance based on the cookies
+        """
         from models.user import User
 
         session_id = self.session_cookie(request)
@@ -33,7 +40,8 @@ class SessionAuth(Auth):
         return User.get(user_id)
 
     def destroy_session(self, request=None):
-        """Deletes the user session / logout"""
+        """ THis method deletes a user session / logout
+        """
         if not request:
             return False
         session_id = self.session_cookie(request)
