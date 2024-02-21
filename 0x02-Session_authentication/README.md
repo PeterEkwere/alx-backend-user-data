@@ -1,1 +1,1 @@
-# This repo contains session authentication parctice
+# This repo contains session authentication practices
