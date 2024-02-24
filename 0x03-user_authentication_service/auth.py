@@ -8,6 +8,7 @@ import bcrypt
 from typing import Dict, List
 from user import User
 from sqlalchemy.exc import NoResultFound
+from uuid import uuid4
 
 
 def _hash_password(password: str) -> bytes:
@@ -30,6 +31,7 @@ class Auth:
 
     def __init__(self):
         self._db = DB()
+        self._generate_uuid = uuid4()
 
     def register_user(self, email: str, password: str) -> User:
         """ This method register users
