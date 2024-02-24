@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import NoResultFound, InvalidRequestError
 from user import Base, User
+from typing import Dict, List
 
 
 class DB:
@@ -48,7 +49,7 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwd: dict) -> User:
+    def find_user_by(self, **kwd: Dict) -> User:
         """ THis method finds users by keyworded arguments
 
         Returns:
@@ -61,3 +62,16 @@ class DB:
         except InvalidRequestError:
             raise InvalidRequestError()
         return user
+
+    def update_user(self, user_id: int, **kwd: Dict):
+        """ THis method updates a user
+
+        Args:
+            user_id (int): this is the user id
+        """
+        user = self.find_user_by(id=user_id)
+        if user_id != user.id:
+            raise ValueError
+        for key, value in kwd.items():
+            setattr(user, key, value)
+        self._session.commit()
