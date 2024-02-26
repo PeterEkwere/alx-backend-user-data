@@ -5,7 +5,7 @@
 """
 from db import DB
 import bcrypt
-from typing import Dict, List
+from typing import Dict, List, Union
 from user import User
 from sqlalchemy.exc import NoResultFound
 from uuid import uuid4
@@ -24,6 +24,11 @@ def _hash_password(password: str) -> bytes:
     salt = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
     return salt
 
+def _generate_uuid() -> str:
+    """ returns a UUID in string repr
+    """
+    return str(uuid4())
+
 
 class Auth:
     """Auth class to interact with the authentication database.
@@ -31,7 +36,6 @@ class Auth:
 
     def __init__(self):
         self._db = DB()
-        self._generate_uuid = uuid4()
 
     def register_user(self, email: str, password: str) -> User:
         """ This method register users
@@ -72,3 +76,45 @@ class Auth:
             return True
         else:
             return False
+        
+    def create_session(self, email: str) -> str:
+        """ This method return the session id
+        """
+        user_email = email
+        try:
+            user = self._db.find_user_by(email=user_email)
+        except NoResultFound:
+            return None
+        session_id = _generate_uuid()
+        self._db.update_user(user.id, session_id=session_id)
+        return session_id
+    
+    def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
+        """ This method gets a user using the session id
+
+        Args:
+            session_id (str): _description_
+
+        Returns:
+            Union[User, None]: _description_
+        """
+        if session_id:
+            try:
+                user = self._db.find_user_by(session_id=session_id)
+            except NoResultFound:
+                return None
+            return user
+        return None
+    
+    def destroy_session(self, user_id: int):
+        """ destroys a user session id
+
+        Args:
+            user_id (int): _description_
+        """
+        if user_id:
+            try:
+                user = self._db.find_user_by(id=user_id)
+            except NoResultFound:
+                return None
+            self._db.update_user(user.id, session_id=None)            
