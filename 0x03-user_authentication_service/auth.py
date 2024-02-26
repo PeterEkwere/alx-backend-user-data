@@ -24,6 +24,7 @@ def _hash_password(password: str) -> bytes:
     salt = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
     return salt
 
+
 def _generate_uuid() -> str:
     """ returns a UUID in string repr
     """
@@ -76,7 +77,7 @@ class Auth:
             return True
         else:
             return False
-        
+
     def create_session(self, email: str) -> str:
         """ This method return the session id
         """
@@ -88,7 +89,7 @@ class Auth:
         session_id = _generate_uuid()
         self._db.update_user(user.id, session_id=session_id)
         return session_id
-    
+
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """ This method gets a user using the session id
 
@@ -105,7 +106,7 @@ class Auth:
                 return None
             return user
         return None
-    
+
     def destroy_session(self, user_id: int):
         """ destroys a user session id
 
@@ -118,7 +119,7 @@ class Auth:
             except NoResultFound:
                 return None
             self._db.update_user(user.id, session_id=None)
-            
+
     def get_reset_password_token(self, email: str) -> str:
         """ This method is used for resetting a users password
 
@@ -133,7 +134,7 @@ class Auth:
             user.reset_token = _generate_uuid()
             return user.reset_token
         raise ValueError
-    
+
     def update_password(self, reset_token: str, password: str):
         """ This method updates a users password
         """

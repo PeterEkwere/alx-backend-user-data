@@ -36,14 +36,15 @@ def login() -> str:
     """
     email = request.form.get("email")
     password = request.form.get("password")
-    
+
     if AUTH.valid_login(email, password):
         session_id = AUTH.create_session(email)
         resp = jsonify({"email": f"{email}", "message": "logged in"})
         resp.set_cookie("session_id", session_id)
         return resp
     abort(401)
-    
+
+
 @app.route("/sessions", methods=['DELETE'], strict_slashes=False)
 def logout() -> str:
     """ This endpoint logs a user out
@@ -54,7 +55,8 @@ def logout() -> str:
         AUTH.destroy_session(user.id)
         return redirect("/")
     abort(403)
-    
+
+
 @app.route('/profile', methods=['GET'], strict_slashes=False)
 def profile() -> str:
     """ this endpoint returns a user profile
@@ -65,17 +67,32 @@ def profile() -> str:
     if user:
         return jsonify({"email": f"{user.email}"}), 200
     abort(403)
-    
+
+
 @app.route('/reset_password', methods=['POST'], strict_slashes=False)
 def get_reset_password_token():
-    """ this endpoint resets a password 
+    """ this endpoint returns a password reset token
     """
     email = request.form.get("email")
     if email:
         token = AUTH.get_reset_password_token(email)
         return jsonify({"email": f"{email}", "reset_token": f"{token}"}), 200
     abort(403)
-    
+
+
+@app.route('/reset_password', methods=['PUT'], strict_slashes=False)
+def update_password():
+    """ This endpoint updates a password
+    """
+    email = request.form.get("email")
+    reset_token = request.form.get("reset_token")
+    new_password = request.form.get("new_password")
+
+    try:
+        AUTH.update_password(reset_token, new_password)
+        return jsonify({"email": f"{email}", "message": "Password updated"})
+    except ValueError:
+        abort(403)
 
 
 if __name__ == "__main__":
