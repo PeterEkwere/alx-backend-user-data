@@ -74,4 +74,3 @@ class DB:
             raise ValueError
         for key, value in kwd.items():
             setattr(user, key, value)
-        self._session.commit()

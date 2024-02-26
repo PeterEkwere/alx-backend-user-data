@@ -117,4 +117,29 @@ class Auth:
                 user = self._db.find_user_by(id=user_id)
             except NoResultFound:
                 return None
-            self._db.update_user(user.id, session_id=None)            
+            self._db.update_user(user.id, session_id=None)
+            
+    def get_reset_password_token(self, email: str) -> str:
+        """ This method is used for resetting a users password
+
+        Args:
+            email (str): _description_
+
+        Returns:
+            str: _description_
+        """
+        user = self._db.find_user_by(email=email)
+        if user:
+            user.reset_token = _generate_uuid()
+            return user.reset_token
+        raise ValueError
+    
+    def update_password(self, reset_token: str, password: str):
+        """ This method updates a users password
+        """
+        user = self._db.find_user_by(reset_token=reset_token)
+        if user:
+            hashed_password = _hash_password(password)
+            user.hashed_password = hashed_password
+            user.reset_token = None
+        raise ValueError
